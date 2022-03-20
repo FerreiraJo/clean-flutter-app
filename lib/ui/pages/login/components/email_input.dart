@@ -12,6 +12,7 @@ class EmailInput extends StatelessWidget {
       stream: presenter.emailErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
+          key: ValueKey('EmailInput'),
           decoration: InputDecoration(
             labelText: R.string.email,
             icon: Icon(Icons.email, color: Theme.of(context).primaryColorLight),

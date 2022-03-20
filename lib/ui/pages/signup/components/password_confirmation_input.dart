@@ -12,6 +12,7 @@ class PasswordConfirmationInput extends StatelessWidget {
       stream: presenter.passwordConfirmationErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
+          key: ValueKey('PasswordConfirmationInput'),
           decoration: InputDecoration(
             labelText: R.string.confirmPassword,
             icon: Icon(Icons.lock, color: Theme.of(context).primaryColorLight),

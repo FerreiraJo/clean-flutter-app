@@ -43,6 +43,7 @@ class LoginPage extends StatelessWidget with KeyboardManager, LoadingManager, UI
                             ),
                             LoginButton(),
                             TextButton.icon(
+                              key: ValueKey('GoToSignUp'),
                               onPressed: presenter.goToSignUp,
                               icon: Icon(Icons.person),
                               label: Text(R.string.addAccount)

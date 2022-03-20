@@ -12,6 +12,7 @@ class PasswordInput extends StatelessWidget {
       stream: presenter.passwordErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
+          key: ValueKey('PasswordInput'),
           decoration: InputDecoration(
             labelText: R.string.password,
             icon: Icon(Icons.lock, color: Theme.of(context).primaryColorLight),

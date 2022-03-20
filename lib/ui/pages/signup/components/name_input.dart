@@ -12,6 +12,7 @@ class NameInput extends StatelessWidget {
       stream: presenter.nameErrorStream,
       builder: (context, snapshot) {
         return TextFormField(
+          key: ValueKey('NameInput'),
           decoration: InputDecoration(
             labelText: R.string.name,
             icon: Icon(Icons.person, color: Theme.of(context).primaryColorLight),
