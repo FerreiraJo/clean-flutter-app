@@ -1,5 +1,5 @@
-import '../ui/components/components.dart';
-import './factories/factories.dart';
+import 'ui/components/components.dart';
+import 'main/factories/factories.dart';
 
 import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter/material.dart';
