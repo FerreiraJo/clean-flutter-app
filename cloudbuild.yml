@@ -20,6 +20,6 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['cp', '/persistent_volume/app/build/outputs/flutter-apk/app-debug.apk', 'gs://fullstackgcp-apk-builds/app-debug-$SHORT_SHA.apk']
+  args: ['cp', '/persistent_volume/app/build/app/outputs/flutter-apk/app-debug.apk', 'gs://fullstackgcp-apk-builds/app-debug-$SHORT_SHA.apk']
 
 timeout: 1200s
