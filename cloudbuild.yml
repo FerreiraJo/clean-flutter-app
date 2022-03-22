@@ -8,11 +8,12 @@ steps:
   args: ['cp', '-a', '.', '/persistent_volume']
 
 # using flutter builder Docker image we have built previously to compile the repo
-- name: 'gcr.io/cloud-builders/docker'
+- name: 'gcr.io/$PROJECT_ID/flutter'
+  entrypoint: '/bin/bash'
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['run', '-v', 'vol1:/app', 'gcr.io/$PROJECT_ID/flutter']
+  args: ['build.sh']
 
 # Push the APK Output from vol1 to your GCS Bucket with Short Commit SHA.
 - name: 'gcr.io/cloud-builders/gsutil'
