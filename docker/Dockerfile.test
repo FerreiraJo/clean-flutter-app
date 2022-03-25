@@ -1,0 +1,116 @@
+FROM ruby:2.7.3-slim
+
+# Install system libraries, Postgres client and more
+RUN apt-get update -qq \
+    # First install some essential packages
+    && apt-get install -y --no-install-recommends curl gnupg libpq-dev lsb-release multiarch-support \
+    # Node (12 LTS) is used by Firebase Admin SDK
+    && curl --silent --fail --show-error --location https://deb.nodesource.com/setup_12.x | bash - \
+    # Yarn is used to accelerate npm packages instalation: https://classic.yarnpkg.com/en/docs/install/#debian-stable
+    && curl --silent --fail --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && apt-get update -qq \
+    && apt-get install -y --no-install-recommends build-essential libicu-dev shared-mime-info \
+        git ssh postgresql-client \
+        # Node and yarn are used by Firebase Admin SDK
+        nodejs yarn \
+    # Clean up apt data in the same RUN command to reduce disk usage
+    && apt-get clean autoclean \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt /var/lib/cache /var/lib/log 
+
+#########################################
+# INSTALL ANDROID SDK                   #
+#########################################
+
+# Install Dependencies.
+RUN apt update -y
+RUN apt install -y \
+    git \
+    wget \
+    curl \
+    unzip \
+    lib32stdc++6 \
+    libglu1-mesa 
+
+RUN apt-get install -y default-jdk-headless
+
+RUN apt-get -y update && apt-get -y install android-sdk
+
+# Export the Android SDK path 
+ENV ANDROID_HOME="/usr/lib/android-sdk"
+ENV PATH=$PATH:"${ANDROID_HOME}/tools/bin"
+ENV PATH=$PATH:"$ANDROID_HOME/platform-tools"
+
+# Fixes sdkmanager error with java versions higher than java 8
+ENV JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+
+# Install android sdk
+# ENV ANDROID_SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
+# ENV ANDROID_TOOLS_ROOT="/opt/android_sdk"
+# RUN mkdir -p "${ANDROID_TOOLS_ROOT}"
+# ENV ANDROID_SDK_ARCHIVE="${ANDROID_TOOLS_ROOT}/archive"
+# RUN wget -q "${ANDROID_SDK_URL}" -O "${ANDROID_SDK_ARCHIVE}"
+# RUN unzip -q -d "${ANDROID_TOOLS_ROOT}" "${ANDROID_SDK_ARCHIVE}"
+# RUN yes "y" | "${ANDROID_TOOLS_ROOT}/tools/bin/sdkmanager" "build-tools;31.0.0"
+# RUN yes "y" | "${ANDROID_TOOLS_ROOT}/tools/bin/sdkmanager" "platforms;android-31"
+# RUN yes "y" | "${ANDROID_TOOLS_ROOT}/tools/bin/sdkmanager" "platform-tools"
+# RUN yes "y" | "${ANDROID_TOOLS_ROOT}/tools/bin/sdkmanager" "sources;android-31"
+# RUN yes "y" | "${ANDROID_TOOLS_ROOT}/tools/bin/sdkmanager" "cmdline-tools;latest"
+# RUN rm "${ANDROID_SDK_ARCHIVE}"
+# ENV PATH="${ANDROID_TOOLS_ROOT}/tools:${PATH}"
+# ENV PATH="${ANDROID_TOOLS_ROOT}/tools/bin:${PATH}"
+
+# ENV ANDROID_HOME ${ANDROID_TOOLS_ROOT}
+# ENV ANDROID_SDK_HOME $ANDROID_HOME
+# ENV PATH $PATH:$ANDROID_SDK_HOME/tools
+# ENV PATH $PATH:$ANDROID_SDK_HOME/platform-tools
+# ENV JAVA_HOME /usr/lib/jvm/java-*
+
+# Add Tini as init process via ENTRYPOINT - https://github.com/krallin/tini
+ARG TINI_VERSION=v0.18.0
+RUN curl --silent --fail --show-error --location --remote-name \
+        https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini-static \
+    && mv tini-static /bin/tini \
+    && chmod +x /bin/tini
+ENTRYPOINT ["tini", "--"]
+
+# Install RubyGems, Bundler and other dependencies
+ENV BUNDLER_VERSION=2.1.4
+RUN gem update --system \
+    && gem install bundler "-v$BUNDLER_VERSION"
+
+# After installing dependencies it is time to move on the app itself
+WORKDIR /app
+
+# Run app as non-root user
+RUN useradd -ms /bin/bash app-user \
+    && chown -R app-user:app-user /app
+USER app-user
+
+# Add node dependencies and firebase.json to run firebasebase emulator
+RUN yarn add appium
+RUN yarn add appium-flutter-driver
+
+# Add Gemfile and bundle cache from previous build, if it exists
+COPY --chown=app-user:app-user ./integration_test/appium-flutter-driver-example/Gemfile* ./integration_test/appium-flutter-driver-example/bundle.* /app/
+RUN if [ -f bundle.tar ]; then \
+      mkdir -p vendor/bundle \
+      && tar xf bundle.tar -C vendor/bundle 2> /dev/null; \
+    fi
+
+# Install gems before adding the whole app in order to get optimal caching
+RUN bundle config set deployment "true" \
+    && bundle config set --local without "development" \
+    && bundle install --jobs "$(nproc)" --retry 20 \
+    && bundle clean
+
+# Finally it is time to copy all the app files
+COPY --chown=app-user:app-user ./integration_test/appium-flutter-driver-example /app/
+RUN rm -f bundle.tar
+
+# Run tests and migrations via CMD script
+COPY --chown=app-user:app-user ./docker/docker-appium-cmd.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/docker-appium-cmd.sh
+
+CMD ["docker-appium-cmd.sh"]

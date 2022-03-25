@@ -1,0 +1,83 @@
+FROM adoptopenjdk/openjdk8:alpine
+
+#====================================
+# Install latest nodejs, npm, appium
+#====================================
+ARG NODE_VERSION=v12.0.0
+ENV NODE_VERSION=$NODE_VERSION
+ARG APPIUM_VERSION=1.22.1
+ENV APPIUM_VERSION=$APPIUM_VERSION
+
+# install appium
+RUN wget -q https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz \
+    && tar -xJf node-${NODE_VERSION}-linux-x64.tar.xz -C /opt/ \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/npm /usr/bin/ \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/node /usr/bin/ \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/npx /usr/bin/ \
+    && npm install -g appium@${APPIUM_VERSION} --allow-root --unsafe-perm=true \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/appium /usr/bin/
+
+WORKDIR /
+
+SHELL ["/bin/sh", "-c"]
+
+RUN apk update && apk upgrade && apk add --no-cache bash git unzip wget libvirt-daemon qemu-img qemu-system-x86_64 dbus polkit virt-manager
+
+# gradle caching
+ENV GRADLE_USER_HOME=/cache
+VOLUME $GRADLE_USER_HOME
+
+# android pre-installed sdk tools/libs
+ARG ANDROID_VERSION="android-30"
+ARG ANDROID_EMULATOR_PACKAGE_x86="system-images;${ANDROID_VERSION};google_apis;x86"
+ARG ANDROID_PLATFORM_VERSION="platforms;${ANDROID_VERSION}"
+ARG ANDROID_SDK_VERSION="sdk-tools-linux-4333796.zip"
+ARG ANDROID_SDK_PACKAGES_EXTRA=""
+ARG ANDROID_SDK_PACKAGES="${ANDROID_EMULATOR_PACKAGE_x86} ${ANDROID_PLATFORM_VERSION} platform-tools emulator ${ANDROID_SDK_PACKAGES_EXTRA}"
+
+RUN wget https://dl.google.com/android/repository/${ANDROID_SDK_VERSION} -P /tmp && \
+    unzip -d /opt/android /tmp/${ANDROID_SDK_VERSION}
+ENV ANDROID_HOME=/opt/android
+ENV PATH "$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools:$ANDROID_HOME/build-tools/30.0.3"
+
+# sdkmanager
+RUN mkdir /root/.android/
+RUN touch /root/.android/repositories.cfg
+RUN yes Y | sdkmanager --licenses 
+RUN yes Y | sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES} 
+RUN yes Y | sdkmanager --verbose --no_https "build-tools;30.0.3"
+
+# avdmanager
+ENV EMULATOR_NAME_x86="android_x86"
+RUN echo "no" | avdmanager --verbose create avd --force --name "${EMULATOR_NAME_x86}" --device "pixel" --package "${ANDROID_EMULATOR_PACKAGE_x86}"
+ENV LD_LIBRARY_PATH "$ANDROID_HOME/emulator/lib64:$ANDROID_HOME/emulator/lib64/qt/lib"
+
+# clean up
+RUN apk del unzip wget && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apk/*
+
+ADD docker/start.sh /
+RUN chmod +x start.sh
+
+RUN npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+
+COPY app-debug.apk /
+
+# Add Tini as init process via ENTRYPOINT - https://github.com/krallin/tini
+# ARG TINI_VERSION=v0.18.0
+# RUN curl --silent --fail --show-error --location --remote-name \
+#         https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini-static \
+#     && mv tini-static /bin/tini \
+#     && chmod +x /bin/tini
+# ENTRYPOINT ["tini", "--"]
+
+
+# Run tests and migrations via CMD script
+COPY ./docker/start.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/start.sh
+
+
+
+
+CMD ["start.sh"]
+
