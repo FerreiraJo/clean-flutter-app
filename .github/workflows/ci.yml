@@ -35,20 +35,18 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
       
-      # - name: Install Ruby
-      # - uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: 2.7.3
-      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      # - run: bundle exec rake tasks
-
-      # - name: Install appium and appium-flutter-driver
-      # - uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '14'
-      # - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
-      # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
-
+      - name: Build App
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.5.1'
+      - run: flutter pub get
+      - run: flutter build --debug apk
+      
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -63,24 +61,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-          # cache: 'npm'
-          # cache-dependency-path: subdir/package-lock.json
       - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
       - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
       - uses: actions/checkout@v2
-      - name: Setup node
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7.3
           # cache: 'npm'
           # cache-dependency-path: subdir/package-lock.json
       - run: bundle exec rake tasks
-
-      # - uses: actions/checkout@v2
-      # - name: Install Ruby
-      # - uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: 2.7.3
-      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      # - run: bundle exec rake tasks
