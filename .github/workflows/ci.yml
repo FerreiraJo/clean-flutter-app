@@ -28,14 +28,14 @@ jobs:
       - run: flutter pub get
       - run: flutter build apk --debug --no-codesign
 
-      - name: Install appium and appium-flutter-driver dependecies
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-      - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
-      - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
-      - run: appium &
+      # - name: Install appium and appium-flutter-driver dependecies
+      # - uses: actions/checkout@v2
+      # - uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '14'
+      # - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
+      # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+      # - run: appium &
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
@@ -56,13 +56,13 @@ jobs:
           disable-animations: true
           script: ./gradlew connectedCheck
       
-      - name: Run appium-flutter-driver tests
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - run: ls
-      - run: cd ./integration_test/appium-flutter-driver-example
-      - run: bundle exec rake run_acceptance[android,@regression]
+      # - name: Run appium-flutter-driver tests
+      # - uses: actions/checkout@v2
+      # - uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: ${{ matrix.ruby }}
+      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      # - run: ls
+      # - run: cd ./integration_test/appium-flutter-driver-example
+      # - run: bundle exec rake run_acceptance[android,@regression]
       
