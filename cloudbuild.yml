@@ -23,11 +23,10 @@ steps:
 
 # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
-  entrypoint: 'bash'
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['run', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master', 'c', 'cd /app && ./docker/start.sh']
+  args: ['run', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master']
 
 
 timeout: 3200s
