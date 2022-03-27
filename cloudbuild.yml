@@ -5,7 +5,9 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['cp', '-a', '.', '/persistent_volume']
+  args: ['cp', '-a', '.', '/persistent_volume',
+    '&& modprobe -r kvm_intel',
+    '&& modprobe kvm_intel nested=1']
 
 # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
