@@ -1,37 +1,34 @@
-steps:
+# steps:
 
-# Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
-- name: 'ubuntu'
-  volumes:
-  - name: 'vol1'
-    path: '/persistent_volume'
-  args:
-    - c
-    - | 
-    cp -a . /persistent_volume \
-    && modprobe -r kvm_intel \
-    && modprobe kvm_intel nested=1
+# # Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
+# - name: 'ubuntu'
+#   volumes:
+#   - name: 'vol1'
+#     path: '/persistent_volume'
+#   args: ['cp', '-a', '.', '/persistent_volume',
+#     '&& modprobe -r kvm_intel',
+#     '&& modprobe kvm_intel nested=1']
 
-# using flutter builder Docker image we have built previously to compile the repo
-- name: 'gcr.io/cloud-builders/docker'
-  volumes:
-  - name: 'vol1'
-    path: '/persistent_volume'
-  args: ['run', '-v', 'vol1:/home/app', '--rm', 'gcr.io/$PROJECT_ID/flutter','-c', 'cd /home/app && flutter build apk --debug']
+# # using flutter builder Docker image we have built previously to compile the repo
+# - name: 'gcr.io/cloud-builders/docker'
+#   volumes:
+#   - name: 'vol1'
+#     path: '/persistent_volume'
+#   args: ['run', '-v', 'vol1:/home/app', '--rm', 'gcr.io/$PROJECT_ID/flutter','-c', 'cd /home/app && flutter build apk --debug']
 
-# Push the APK Output from vol1 to your GCS Bucket with Short Commit SHA.
-- name: 'gcr.io/cloud-builders/gsutil'
-  volumes:
-  - name: 'vol1'
-    path: '/persistent_volume'
-  args: ['cp', '/persistent_volume/build/app/outputs/flutter-apk/app-debug.apk', '/persistent_volume/integration_test/appium-flutter-driver-example/']
+# # Push the APK Output from vol1 to your GCS Bucket with Short Commit SHA.
+# - name: 'gcr.io/cloud-builders/gsutil'
+#   volumes:
+#   - name: 'vol1'
+#     path: '/persistent_volume'
+#   args: ['cp', '/persistent_volume/build/app/outputs/flutter-apk/app-debug.apk', '/persistent_volume/integration_test/appium-flutter-driver-example/']
 
-# using flutter builder Docker image we have built previously to compile the repo
-- name: 'gcr.io/cloud-builders/docker'
-  volumes:
-  - name: 'vol1'
-    path: '/persistent_volume'
-  args: ['run', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master']
+# # using flutter builder Docker image we have built previously to compile the repo
+# - name: 'gcr.io/cloud-builders/docker'
+#   volumes:
+#   - name: 'vol1'
+#     path: '/persistent_volume'
+#   args: ['run', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master']
 
 
-timeout: 3200s
+# timeout: 3200s
