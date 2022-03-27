@@ -35,12 +35,12 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
       
-      - name: Install Ruby
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.3
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - run: bundle exec rake tasks
+      # - name: Install Ruby
+      # - uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: 2.7.3
+      #     bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      # - run: bundle exec rake tasks
 
       # - name: Install appium and appium-flutter-driver
       # - uses: actions/setup-node@v2
