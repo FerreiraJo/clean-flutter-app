@@ -26,7 +26,7 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['run','--device', '/dev/kvm', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu', 'c', 'cd /app && ./docker/start.sh']
+  args: ['run','--device', '/dev/kvm', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master', 'c', 'cd /app && ./docker/start.sh']
 
 
 timeout: 3200s
