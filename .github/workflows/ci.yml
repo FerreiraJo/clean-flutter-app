@@ -45,7 +45,7 @@ jobs:
         with:
           flutter-version: '2.5.1'
       - run: flutter pub get
-      - run: flutter build --debug apk
+      - run: flutter build apk --debug 
       
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
