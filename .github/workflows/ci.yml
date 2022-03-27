@@ -1,11 +1,8 @@
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'debug'
-        
+  push:
+    branches:
+      - 'appium-flutter-driver'
+
 jobs:
   test:
     runs-on: macos-latest
