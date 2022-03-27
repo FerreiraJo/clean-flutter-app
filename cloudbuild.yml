@@ -6,6 +6,7 @@ steps:
   - name: 'vol1'
     path: '/persistent_volume'
   args: ['cp', '-a', '.', '/persistent_volume']
+  ]
 
 # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
@@ -26,7 +27,7 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['run','--device', '/dev/kvm', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master', 'c', 'cd /app && ./docker/start.sh']
+  args: ['run', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master', 'c', 'cd /app && ./docker/start.sh']
 
 
 timeout: 3200s
