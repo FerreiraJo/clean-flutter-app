@@ -2,24 +2,11 @@ version: '3.1'
 
 services:
   emulator_android:
-    image:  emulator:latest
+    image:  ubuntu:latest
     devices:
       - "/dev/kvm:/dev/kvm"
     privileged: true
-    network_mode: host
+    # network_mode: host
     # logging:
     #   driver: none
 
-# Appium Docker Android  
-  appium:
-    image: appium-flutter-driver
-    privileged: true
-    depends_on:
-      - emulator_android
-    network_mode: host
-    # volumes:
-    #   - /dev/bus/usb:/dev/bus/usb
-      # - ~/.android:/root/.android
-      # - $PWD/integration_test/appium-flutter-driver-example:/root/app
-      # - $PWD/build/app/outputs/flutter-apk:/app
-    

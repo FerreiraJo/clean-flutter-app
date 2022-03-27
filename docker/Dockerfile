@@ -54,4 +54,4 @@ RUN yes "y" | flutter doctor --android-licenses
 # Perform a doctor run.
 RUN flutter doctor -v
 
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "flutter" ]

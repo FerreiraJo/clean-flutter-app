@@ -47,7 +47,8 @@ function start_emulator_if_possible() {
 }
 
 function start_appium_server() {
-  appium
+  appium &
+  sleep 5
 }
 
 # function start_adb_over_tcpip() {
@@ -56,4 +57,7 @@ function start_appium_server() {
 
 start_emulator_if_possible
 start_appium_server
+cd /app/integration_test/appium-flutter-driver-example
+bundle install
+bundle exec rake run_acceptance[android,@regression]
 # start_adb_over_tcpip

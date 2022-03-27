@@ -12,15 +12,21 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['build.sh']
-  args: ['run', '-v', 'vol1:/home/app', '--rm', 'gcr.io/$PROJECT_ID/flutter', '-c', 'cd /home/app && flutter build apk --debug']
+  args: ['run', '-v', 'vol1:/home/app', '--rm', 'gcr.io/$PROJECT_ID/flutter','-c', 'cd /home/app && flutter build apk --debug']
 
 # Push the APK Output from vol1 to your GCS Bucket with Short Commit SHA.
 - name: 'gcr.io/cloud-builders/gsutil'
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['cp', '/persistent_volume/build/app/outputs/flutter-apk/app-debug.apk', 'gs://flutter-apk/app-debug-$SHORT_SHA.apk']
+  args: ['cp', '/persistent_volume/build/app/outputs/flutter-apk/app-debug.apk', '/persistent_volume/integration_test/appium-flutter-driver-example/']
+
+# using flutter builder Docker image we have built previously to compile the repo
+- name: 'gcr.io/cloud-builders/docker'
+  volumes:
+  - name: 'vol1'
+    path: '/persistent_volume'
+  args: ['run','--device', '/dev/kvm', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu', 'c', 'cd /app && ./docker/start.sh']
 
 
-timeout: 1200s
+timeout: 3200s
