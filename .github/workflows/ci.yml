@@ -62,6 +62,16 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
-      - run: npm install
-      - run: npm test
+          node-version: '12'
+          cache: 'npm'
+          cache-dependency-path: subdir/package-lock.json
+      - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
+      - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+
+      - uses: actions/checkout@v2
+      - name: Install Ruby
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.3
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - run: bundle exec rake tasks
