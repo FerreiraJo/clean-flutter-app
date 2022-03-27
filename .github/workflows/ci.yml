@@ -63,8 +63,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-          cache: 'npm'
-          cache-dependency-path: subdir/package-lock.json
+          # cache: 'npm'
+          # cache-dependency-path: subdir/package-lock.json
       - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
       - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
