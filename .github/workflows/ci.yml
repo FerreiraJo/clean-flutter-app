@@ -64,23 +64,23 @@ jobs:
       
       #### Install Appium #####
 
-      # - name: Node cache 
-      #   uses: actions/cache@v2
-      #   id: node-cache
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      - name: Node cache 
+        uses: actions/cache@v2
+        id: node-cache
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      # - name: Setup node
-      #   if: steps.node-cache.outputs.cache-hit != 'true'
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '12'
-      # - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
-      # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
-      # - run: appium &
+      - name: Setup node
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
+      - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+      - run: appium &
 
       ### Install RUBY #####
       - name: Setup Ruby
