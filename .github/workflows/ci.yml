@@ -50,7 +50,7 @@ jobs:
       #       ${{ runner.tool_cache }}/flutter
       #     key: flutter
 
-      - name: Build project
+      - name: Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.5.1'
@@ -66,7 +66,6 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-
 
       - name: Yarn Cache
         uses: actions/cache@v3
@@ -99,8 +98,6 @@ jobs:
           ruby-version: 2.7.3
           bundler-cache: true 
       # - run: cd appium-flutter-driver-example/
-
-      - run: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake run_acceptance[android,@regression]
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
