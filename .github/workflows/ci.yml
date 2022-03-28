@@ -23,6 +23,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
+            ~/hostedtoolcache/flutter
           key: avd-${{ matrix.api-level }}
 
       - name: create AVD and generate snapshot for caching
@@ -40,6 +41,9 @@ jobs:
         with:
           flutter-version: '2.5.1'
           channel: 'stable'
+          cache: true
+          cache-key: avd-${{ matrix.api-level }} # optional, change this to force refresh cache
+          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
       - run: flutter build apk --debug
       
       - name: run tests
