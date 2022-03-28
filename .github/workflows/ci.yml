@@ -45,7 +45,6 @@ jobs:
 
       - name: Build project
         uses: subosito/flutter-action@v2
-        uses: actions/checkout@v2
         with:
           flutter-version: '2.5.1'
           channel: 'stable'
@@ -75,7 +74,6 @@ jobs:
       - run: ls
  
       - name: Setup Ruby
-        uses: actions/checkout@v2 
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7.3
