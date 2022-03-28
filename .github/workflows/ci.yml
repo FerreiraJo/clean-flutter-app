@@ -35,33 +35,33 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
       
-      - name: Flutter cache
-        uses: actions/cache@v2
-        id: flutter
-        with:
-          path: |
-            /Users/runner/hostedtoolcache/flutter
-          key: flutter-stable-2.5.1
+      # - name: Flutter cache
+      #   uses: actions/cache@v2
+      #   id: flutter
+      #   with:
+      #     path: |
+      #       /Users/runner/hostedtoolcache/flutter
+      #     key: flutter-stable-2.5.1
 
-      - uses: actions/checkout@v2
-      - name: Build project
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.5.1'
-          channel: 'stable'
-          cache: true
-          cache-key: flutter # optional, change this to force refresh cache
-          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
-      - run: flutter build apk --debug
+      # - uses: actions/checkout@v2
+      # - name: Build project
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: '2.5.1'
+      #     channel: 'stable'
+      #     cache: true
+      #     cache-key: flutter # optional, change this to force refresh cache
+      #     cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+      # - run: flutter build apk --debug
       
-      #### Install Appium #####
-      - uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: '12'
-      - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
-      - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+      # #### Install Appium #####
+      # - uses: actions/checkout@v2
+      # - name: Setup node
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: '12'
+      # - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
+      # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
       #### Install RUBY #####
       - name: Checkout private tools
@@ -70,24 +70,27 @@ jobs:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
-
-      - uses: actions/checkout@v2  
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.3
-          # cache: 'npm'
-          # cache-dependency-path: subdir/package-lock.json
+      - run: pwd
       - run: ls
-      - run: cd /appium-flutter-driver-example
-      - run: bundle install
-      - run: bundle exec rake tasks
+      - run: find / -type d -name "*appium-flutter-driver-example*"
 
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: ls
+      # - uses: actions/checkout@v2  
+      # - name: Setup Ruby
+      #   uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: 2.7.3
+      #     # cache: 'npm'
+      #     # cache-dependency-path: subdir/package-lock.json
+      # - run: ls
+      # - run: cd /appium-flutter-driver-example
+      # - run: bundle install
+      # - run: bundle exec rake tasks
+
+      # - name: run tests
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: ${{ matrix.api-level }}
+      #     force-avd-creation: false
+      #     emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+      #     disable-animations: true
+      #     script: ls
