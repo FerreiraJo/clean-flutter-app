@@ -64,7 +64,7 @@ jobs:
 
       #### Install RUBY #####
       - name: Checkout private tools
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
         with:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
