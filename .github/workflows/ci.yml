@@ -75,7 +75,6 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: ./appium-flutter-driver-example/
       - run: cd appium-flutter-driver-example/ && yarn install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
       - run: cd appium-flutter-driver-example/ && yarn appium &
 
 
