@@ -91,12 +91,14 @@ jobs:
           bundler-cache: true 
       # - run: cd appium-flutter-driver-example/
 
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake run_acceptance[android,@regression]
+      - run: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake run_acceptance[android,@regression]
+
+      # - name: Run tests
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: ${{ matrix.api-level }}
+      #     force-avd-creation: false
+      #     emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+      #     disable-animations: true
+      #     script: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake run_acceptance[android,@regression]
 
