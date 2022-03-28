@@ -51,14 +51,17 @@ jobs:
           key: flutter
 
       - name: Build project
+        if: steps.flutter.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.5.1'
           channel: 'stable'
           cache: true
           cache-key: flutter # optional, change this to force refresh cache
-          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache pyyath
       # - run: ls
+      - run: flutter pub get
+
       - run: flutter build apk --debug
       
       #### Install Appium #####
