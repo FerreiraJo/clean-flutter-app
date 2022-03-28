@@ -76,6 +76,7 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-node-
 
+      - name: Yarn Cache
       - uses: actions/cache@v3
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
@@ -96,8 +97,6 @@ jobs:
         # if: steps.yarn-cache.outputs.cache-hit != 'true'
 
       - run: cd appium-flutter-driver-example/ && yarn appium &
-      # - run: npm install -g appium@1.22.1
-      # - run: npm install -g appium-flutter-driver
       - run: cd appium-flutter-driver-example/ ls
 
       ### Install RUBY #####
