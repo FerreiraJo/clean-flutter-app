@@ -78,8 +78,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-          cache: 'npm'
-          cache-dependency-path: clean-flutter-app/appium-flutter-driver-example/package-lock.json
+          # cache: 'npm'
+          # cache-dependency-path: clean-flutter-app/appium-flutter-driver-example/package-lock.json
       - run: ls
       - run: cd appium-flutter-driver-example/ && yarn install
         # if: steps.node-cache.outputs.cache-hit != 'true'
