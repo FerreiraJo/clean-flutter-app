@@ -69,6 +69,8 @@ jobs:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
+
+      - uses: actions/checkout@v2  
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
