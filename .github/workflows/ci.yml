@@ -42,13 +42,6 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
       
-      # - name: Flutter cache
-      #   uses: actions/cache@v3
-      #   id: flutter
-      #   with:
-      #     path: |
-      #       ${{ runner.tool_cache }}/flutter
-      #     key: flutter
 
       - name: Flutter
         uses: subosito/flutter-action@v2
@@ -58,7 +51,6 @@ jobs:
           # cache: true
           # cache-key: flutter # optional, change this to force refresh cache
           # cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache pyyath
-      # - run: ls
       - run: flutter pub get
       - run: flutter build apk --debug
       
@@ -77,18 +69,15 @@ jobs:
             ${{ runner.os }}-yarn
 
       - name: Setup node
-        # if: steps.node-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v2
         with:
           node-version: '12'
           cache: 'yarn'
           cache-dependency-path: ./appium-flutter-driver-example/
-      - run: ls
       - run: cd appium-flutter-driver-example/ && yarn install
-        # if: steps.yarn-cache.outputs.cache-hit != 'true'
-
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
       - run: cd appium-flutter-driver-example/ && yarn appium &
-      - run: cd appium-flutter-driver-example/ ls
+
 
       ## Install RUBY #####
       - name: Setup Ruby
@@ -97,7 +86,6 @@ jobs:
           working-directory: appium-flutter-driver-example/
           ruby-version: 2.7.3
           bundler-cache: true 
-      # - run: cd appium-flutter-driver-example/
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
