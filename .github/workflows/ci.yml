@@ -45,6 +45,7 @@ jobs:
 
       - name: Build project
         uses: subosito/flutter-action@v2
+        uses: actions/checkout@v2
         with:
           flutter-version: '2.5.1'
           channel: 'stable'
@@ -65,32 +66,31 @@ jobs:
 
       #### Install RUBY #####
       - name: Checkout private tools
-        # uses: actions/checkout@v2
+        uses: actions/checkout@v2
         with:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
       - run: pwd
       - run: ls
-      - run: find / -type d -name "*appium-flutter-driver-example*"
+ 
+      - name: Setup Ruby
+        uses: actions/checkout@v2 
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.3
+          # cache: 'npm'
+          # cache-dependency-path: subdir/package-lock.json
+      - run: ls
+      - run: cd /appium-flutter-driver-example
+      - run: bundle install
+      - run: bundle exec rake tasks
 
-      # - uses: actions/checkout@v2  
-      # - name: Setup Ruby
-      #   uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: 2.7.3
-      #     # cache: 'npm'
-      #     # cache-dependency-path: subdir/package-lock.json
-      # - run: ls
-      # - run: cd /appium-flutter-driver-example
-      # - run: bundle install
-      # - run: bundle exec rake tasks
-
-      # - name: run tests
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: ${{ matrix.api-level }}
-      #     force-avd-creation: false
-      #     emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-      #     disable-animations: true
-      #     script: ls
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ls && adb devices
