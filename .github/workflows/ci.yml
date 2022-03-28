@@ -36,30 +36,30 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
       
       - name: Checkout tests
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
       
-      - name: Flutter cache
-        uses: actions/cache@v2
-        id: flutter
-        with:
-          path: |
-            ${{ runner.tool_cache }}/flutter
-          key: flutter
+      # - name: Flutter cache
+      #   uses: actions/cache@v2
+      #   id: flutter
+      #   with:
+      #     path: |
+      #       ${{ runner.tool_cache }}/flutter
+      #     key: flutter
 
-      - name: Build project
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.5.1'
-          channel: 'stable'
-          cache: true
-          # cache-key: flutter # optional, change this to force refresh cache
-          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
-      - run: ls
-      - run: flutter --version
+      # - name: Build project
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: '2.5.1'
+      #     channel: 'stable'
+      #     cache: true
+      #     # cache-key: flutter # optional, change this to force refresh cache
+      #     cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache path
+      # - run: ls
+      # - run: flutter --version
       
       #### Install Appium #####
       - uses: actions/checkout@v2
@@ -69,8 +69,10 @@ jobs:
           node-version: '12'
       - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
       - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+      - run: ls
 
       ### Install RUBY #####
+      - uses: actions/checkout@v2
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -80,6 +82,7 @@ jobs:
       - run: ls
       - run: ls && cd appium-flutter-driver-example/ && bundle install
 
+      - uses: actions/checkout@v2
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
