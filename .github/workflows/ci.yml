@@ -17,6 +17,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         
       - name: AVD cache
+        if: always()
         uses: actions/cache@v3
         id: avd-cache
         with:
@@ -69,6 +70,7 @@ jobs:
             ${{ runner.os }}-yarn
 
       - name: Setup node
+        if: always()
         uses: actions/setup-node@v2
         with:
           node-version: '12'
@@ -80,6 +82,7 @@ jobs:
 
       ## Install RUBY #####
       - name: Setup Ruby
+        if: always()
         uses: ruby/setup-ruby@v1
         with:
           working-directory: appium-flutter-driver-example/
