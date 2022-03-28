@@ -90,7 +90,7 @@ jobs:
         with:
           node-version: '12'
           cache: 'yarn'
-          cache-dependency-path: clean-flutter-app/appium-flutter-driver-example/yarn.lock
+          cache-dependency-path: /Users/runner/hostedtoolcache/clean-flutter-app/appium-flutter-driver-example/yarn.lock
       - run: ls
       - run: cd appium-flutter-driver-example/ && yarn install
         # if: steps.yarn-cache.outputs.cache-hit != 'true'
