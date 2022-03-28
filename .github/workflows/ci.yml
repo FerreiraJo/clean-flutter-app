@@ -74,6 +74,7 @@ jobs:
           ruby-version: 2.7.3
           # cache: 'npm'
           # cache-dependency-path: subdir/package-lock.json
+      - run: ls
       - run: cd /appium-flutter-driver-example
       - run: bundle install
       - run: bundle exec rake tasks
