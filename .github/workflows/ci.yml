@@ -82,11 +82,10 @@ jobs:
       # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
       # - run: appium &
 
-      - run: cd appium-flutter-driver-example/
-
       ### Install RUBY #####
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
+      - run: cd appium-flutter-driver-example/
         with:
           ruby-version: 2.7.3
           bundler-cache: true 
