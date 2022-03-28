@@ -63,13 +63,13 @@ jobs:
       - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
       - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
-      # #### Install RUBY #####
-      # - name: Checkout private tools
-      #   uses: actions/checkout@v3
-      #   with:
-      #     repository: FerreiraJo/appium-flutter-driver-example
-      #     token: ${{ secrets.ACCESS_TOKEN }}
-      #     path: appium-flutter-driver-example
+      #### Install RUBY #####
+      - name: Checkout private tools
+        uses: actions/checkout@v2
+        with:
+          repository: FerreiraJo/appium-flutter-driver-example
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: appium-flutter-driver-example
 
       - uses: actions/checkout@v2  
       - name: Setup Ruby
