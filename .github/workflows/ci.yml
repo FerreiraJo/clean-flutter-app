@@ -68,7 +68,9 @@ jobs:
         uses: actions/cache@v2
         id: node-cache
         with:
-          path: ~/.npm
+          path: |
+            ~/.npm
+            ~/Users/runner/hostedtoolcache/clean-flutter-app/clean-flutter-app/node_modules/*
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -79,7 +81,7 @@ jobs:
         with:
           node-version: '12'
           cache: 'npm'
-          cache-dependency-path: appium-flutter-driver-example/package-lock.json
+          cache-dependency-path: clean-flutter-apppackage-lock.json
       - run: ls
       - run: cd appium-flutter-driver-example/ && npm install
         if: steps.node-cache.outputs.cache-hit != 'true'
