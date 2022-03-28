@@ -79,12 +79,12 @@ jobs:
         with:
           node-version: '12'
           cache: 'npm'
-          cache-dependency-path: clean-flutter-apppackage-lock.json
+          cache-dependency-path: clean-flutter-app/appium-flutter-driver-example/package-lock.json
       - run: ls
-      - run: cd appium-flutter-driver-example/ && npm install
+      - run: cd appium-flutter-driver-example/ && yarn install
         # if: steps.node-cache.outputs.cache-hit != 'true'
 
-      - run: cd appium-flutter-driver-example/ && npx appium &
+      - run: cd appium-flutter-driver-example/ && yarn appium &
       # - run: npm install -g appium@1.22.1
       # - run: npm install -g appium-flutter-driver
       - run: cd appium-flutter-driver-example/ ls
