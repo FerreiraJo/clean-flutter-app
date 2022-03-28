@@ -61,25 +61,16 @@ jobs:
       - run: ls
       - run: flutter --version
       
-      # #### Install Appium #####
-      # - uses: actions/checkout@v2
-      # - name: Setup node
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: '12'
-      # - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
-      # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+      #### Install Appium #####
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
+      - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
-      #### Install RUBY #####
-      # - name: Checkout private tools
-      #   # uses: actions/checkout@v2
-      #   with:
-      #     repository: FerreiraJo/appium-flutter-driver-example
-      #     token: ${{ secrets.ACCESS_TOKEN }}
-      #     path: appium-flutter-driver-example
-      # - run: pwd
-      # - run: ls
- 
+      ### Install RUBY #####
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -87,9 +78,7 @@ jobs:
           # cache: 'npm'
           # cache-dependency-path: subdir/package-lock.json
       - run: ls
-      - run: cd appium-flutter-driver-example/
-      - run: bundle install
-      - run: bundle exec rake tasks
+      - run: ls && cd appium-flutter-driver-example/ && bundle install
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -98,7 +87,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ls && adb devices
+          script: ls && cd appium-flutter-driver-example/ && bundle exec rake tasks
 
       - name: Save Flutter cache
         uses: actions/cache@v2
