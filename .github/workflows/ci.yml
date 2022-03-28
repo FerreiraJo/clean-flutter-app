@@ -11,7 +11,7 @@ jobs:
         api-level: [29]
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
@@ -36,7 +36,6 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
       
       - name: Checkout tests
-        uses: actions/checkout@v2
         with:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -62,7 +61,6 @@ jobs:
       # - run: flutter --version
       
       #### Install Appium #####
-      - uses: actions/checkout@v2
       - name: Setup node
         uses: actions/setup-node@v2
         with:
@@ -72,7 +70,6 @@ jobs:
       - run: ls
 
       ### Install RUBY #####
-      - uses: actions/checkout@v2
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -82,7 +79,6 @@ jobs:
       - run: ls
       - run: ls && cd appium-flutter-driver-example/ && bundle install
 
-      - uses: actions/checkout@v2
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
