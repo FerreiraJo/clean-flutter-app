@@ -36,6 +36,7 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
       
       - name: Checkout tests
+        uses: actions/checkout@v3
         with:
           repository: FerreiraJo/appium-flutter-driver-example
           token: ${{ secrets.ACCESS_TOKEN }}
