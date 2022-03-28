@@ -85,11 +85,11 @@ jobs:
       ### Install RUBY #####
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-      - run: cd appium-flutter-driver-example/
         with:
+          path: appium-flutter-driver-example/
           ruby-version: 2.7.3
           bundler-cache: true 
-      - run: cd appium-flutter-driver-example/
+      # - run: cd appium-flutter-driver-example/
 
       # - name: run tests
       #   uses: reactivecircus/android-emulator-runner@v2
