@@ -63,6 +63,7 @@ jobs:
       - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
       #### Install RUBY #####
+      - name: Checkout private tools
       - uses: actions/checkout@v3
         with:
           repository: FerreiraJo/appium-flutter-driver-example
