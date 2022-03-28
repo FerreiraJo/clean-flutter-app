@@ -86,7 +86,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake start_appium_server && bundle exec rake run_acceptance[android,@regression]
+          script: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && appium  && bundle exec rake run_acceptance[android,@regression]
 
       - name: Save Flutter cache
         uses: actions/cache@v2
