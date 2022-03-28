@@ -12,10 +12,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          repository: FerreiraJo/appium-flutter-driver-example
-          token: ${{ secrets.ACCESS_TOKEN }}
-          path: appium-flutter-driver-example
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
@@ -38,6 +34,13 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
+      
+      - name: Checkout tests
+        uses: actions/checkout@v3
+        with:
+          repository: FerreiraJo/appium-flutter-driver-example
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: appium-flutter-driver-example
       
       - name: Flutter cache
         uses: actions/cache@v2
@@ -84,7 +87,7 @@ jobs:
           # cache: 'npm'
           # cache-dependency-path: subdir/package-lock.json
       - run: ls
-      - run: cd /appium-flutter-driver-example
+      - run: cd appium-flutter-driver-example/
       - run: bundle install
       - run: bundle exec rake tasks
 
