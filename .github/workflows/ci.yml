@@ -86,7 +86,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          path: appium-flutter-driver-example/
+          working-directory: appium-flutter-driver-example/
           ruby-version: 2.7.3
           bundler-cache: true 
       # - run: cd appium-flutter-driver-example/
