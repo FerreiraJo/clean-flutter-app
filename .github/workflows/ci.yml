@@ -80,8 +80,10 @@ jobs:
           node-version: '12'
           cache: 'npm'
           cache-dependency-path: appium-flutter-driver-example/package-lock.json
-      - run: npm install
-      - run: appium &
+      - run: ls
+      - run: cd /appium-flutter-driver-example && npm install
+      - run: cd /appium-flutter-driver-example && appium &
+      - run: ls
 
       ### Install RUBY #####
       # - name: Setup Ruby
