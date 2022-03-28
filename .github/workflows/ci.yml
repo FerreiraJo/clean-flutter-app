@@ -43,8 +43,9 @@ jobs:
             /Users/runner/hostedtoolcache/flutter
           key: flutter-stable-2.5.1
 
+      - uses: actions/checkout@v2
       - name: Build project
-      - uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.5.1'
           channel: 'stable'
