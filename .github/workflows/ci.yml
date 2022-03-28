@@ -13,27 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Gradle cache
-        uses: gradle/gradle-build-action@v2
+      # - name: Gradle cache
+      #   uses: gradle/gradle-build-action@v2
         
-      - name: AVD cache
-        uses: actions/cache@v2
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-${{ matrix.api-level }}
+      # - name: AVD cache
+      #   uses: actions/cache@v2
+      #   id: avd-cache
+      #   with:
+      #     path: |
+      #       ~/.android/avd/*
+      #       ~/.android/adb*
+      #     key: avd-${{ matrix.api-level }}
 
-      - name: Create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+      # - name: Create AVD and generate snapshot for caching
+      #   if: steps.avd-cache.outputs.cache-hit != 'true'
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: ${{ matrix.api-level }}
+      #     force-avd-creation: false
+      #     emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+      #     disable-animations: false
+      #     script: echo "Generated AVD snapshot for caching."
       
       - name: Checkout tests
         uses: actions/checkout@v3
@@ -42,25 +42,25 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
       
-      - name: Flutter cache
-        uses: actions/cache@v2
-        id: flutter
-        with:
-          path: |
-            ${{ runner.tool_cache }}/flutter
-          key: flutter
+      # - name: Flutter cache
+      #   uses: actions/cache@v2
+      #   id: flutter
+      #   with:
+      #     path: |
+      #       ${{ runner.tool_cache }}/flutter
+      #     key: flutter
 
-      - name: Build project
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.5.1'
-          channel: 'stable'
-          # cache: true
-          # cache-key: flutter # optional, change this to force refresh cache
-          # cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache pyyath
-      # - run: ls
-      - run: flutter pub get
-      - run: flutter build apk --debug
+      # - name: Build project
+      #   uses: subosito/flutter-action@v2
+      #   with:
+      #     flutter-version: '2.5.1'
+      #     channel: 'stable'
+      #     # cache: true
+      #     # cache-key: flutter # optional, change this to force refresh cache
+      #     # cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache pyyath
+      # # - run: ls
+      # - run: flutter pub get
+      # - run: flutter build apk --debug
       
       #### Install Appium #####
 
@@ -74,24 +74,23 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Setup node
-        if: steps.node-cache.outputs.cache-hit != 'true'
+        # if: steps.node-cache.outputs.cache-hit != 'true'
         uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - run: npm install -g appium@1.22.1 --allow-root --unsafe-perm=true
-      - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+      - run: npm install
       - run: appium &
 
       ### Install RUBY #####
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          working-directory: appium-flutter-driver-example/
-          ruby-version: 2.7.3
-          bundler-cache: true 
-      # - run: cd appium-flutter-driver-example/
+      # - name: Setup Ruby
+      #   uses: ruby/setup-ruby@v1
+      #   with:
+      #     working-directory: appium-flutter-driver-example/
+      #     ruby-version: 2.7.3
+      #     bundler-cache: true 
+      # # - run: cd appium-flutter-driver-example/
 
-      - run: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake run_acceptance[android,@regression]
+      # - run: ls && cd appium-flutter-driver-example/ && ls && bundle exec rake --tasks && bundle exec rake run_acceptance[android,@regression]
 
       # - name: Run tests
       #   uses: reactivecircus/android-emulator-runner@v2
