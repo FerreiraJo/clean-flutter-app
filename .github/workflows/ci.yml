@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+        with:
+          repository: FerreiraJo/appium-flutter-driver-example
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: appium-flutter-driver-example
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
@@ -40,8 +44,8 @@ jobs:
         id: flutter
         with:
           path: |
-            /Users/runner/hostedtoolcache/flutter
-          key: flutter-stable-2.5.1
+            ${{ runner.tool_cache }}/flutter
+          key: flutter
 
       - name: Build project
         uses: subosito/flutter-action@v2
@@ -64,14 +68,14 @@ jobs:
       # - run: npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
 
       #### Install RUBY #####
-      - name: Checkout private tools
-        uses: actions/checkout@v2
-        with:
-          repository: FerreiraJo/appium-flutter-driver-example
-          token: ${{ secrets.ACCESS_TOKEN }}
-          path: appium-flutter-driver-example
-      - run: pwd
-      - run: ls
+      # - name: Checkout private tools
+      #   # uses: actions/checkout@v2
+      #   with:
+      #     repository: FerreiraJo/appium-flutter-driver-example
+      #     token: ${{ secrets.ACCESS_TOKEN }}
+      #     path: appium-flutter-driver-example
+      # - run: pwd
+      # - run: ls
  
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -92,3 +96,11 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ls && adb devices
+
+      - name: Save Flutter cache
+        uses: actions/cache@v2
+        id: flutter
+        with:
+          path: |
+            ${{ runner.tool_cache }}/flutter
+          key: flutter
