@@ -42,26 +42,24 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           path: appium-flutter-driver-example
       
-      - name: Flutter cache
-        uses: actions/cache@v2
-        id: flutter
-        with:
-          path: |
-            ${{ runner.tool_cache }}/flutter
-          key: flutter
+      # - name: Flutter cache
+      #   uses: actions/cache@v2
+      #   id: flutter
+      #   with:
+      #     path: |
+      #       ${{ runner.tool_cache }}/flutter
+      #     key: flutter
 
       - name: Build project
-        if: steps.flutter.outputs.cache-hit != 'true'
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '2.5.1'
           channel: 'stable'
-          cache: true
-          cache-key: flutter # optional, change this to force refresh cache
-          cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache pyyath
+          # cache: true
+          # cache-key: flutter # optional, change this to force refresh cache
+          # cache-path: ${{ runner.tool_cache }}/flutter # optional, change this to specify the cache pyyath
       # - run: ls
       - run: flutter pub get
-
       - run: flutter build apk --debug
       
       #### Install Appium #####
