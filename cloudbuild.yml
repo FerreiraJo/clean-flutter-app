@@ -1,13 +1,18 @@
 # steps:
 
-# # Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
-# - name: 'ubuntu'
-#   volumes:
-#   - name: 'vol1'
-#     path: '/persistent_volume'
-#   args: ['cp', '-a', '.', '/persistent_volume',
-#     '&& modprobe -r kvm_intel',
-#     '&& modprobe kvm_intel nested=1']
+# Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
+- name: 'ubuntu'
+  volumes:
+  - name: 'vol1'
+    path: '/persistent_volume'
+  args: ['./install_kvm.sh']
+
+  # # using flutter builder Docker image we have built previously to compile the repo
+- name: 'gcr.io/cloud-builders/docker'
+  volumes:
+  - name: 'vol1'
+    path: '/persistent_volume'
+  args: ['run', '-e', 'ADBKEY="$(cat ~/.android/adbkey)', '--device', '/dev/kvm', '--publish', '8554:8554/tcp', --publish, '5555:5555/tcp'  'gcr.io/$PROJECT_ID/android-emulator']
 
 # # using flutter builder Docker image we have built previously to compile the repo
 # - name: 'gcr.io/cloud-builders/docker'
@@ -31,4 +36,4 @@
 #   args: ['run', '-v', 'vol1:/app', '--rm', 'gcr.io/$PROJECT_ID/ubuntu:master']
 
 
-# timeout: 3200s
+timeout: 3200s
