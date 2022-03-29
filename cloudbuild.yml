@@ -1,11 +1,11 @@
 # steps:
 
 # Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
-- name: 'ubuntu'
-  volumes:
-  - name: 'vol1'
-    path: '/persistent_volume'
-  args: ['ls']
+# - name: 'ubuntu'
+#   volumes:
+#   - name: 'vol1'
+#     path: '/persistent_volume'
+#   args: ['ls']
   # args: ['apt', '-y', 'install', 'bridge-utils', 'cpu-checker', 'libvirt-clients', 'libvirt-daemon', 'qemu', 'qemu-kvm']
   # - 'cp -a  ../ /persistent_volume'
   # - 'apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm'        
