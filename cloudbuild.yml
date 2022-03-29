@@ -5,7 +5,7 @@
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['./install_kvm.sh']
+  args: ['./docker/install_kvm.sh']
 
   # # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
