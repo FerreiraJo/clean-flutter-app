@@ -5,10 +5,12 @@
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: "cp -a  ../ /persistent_volume \
-        && apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm \        
-        && kvm-ok \
-        && apt install android-sdk"
+  entrypoint: bash
+  args: 
+      - cp -a  ../ /persistent_volume 
+      - apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm        
+      - kvm-ok 
+      - apt install android-sdk"
 
   # # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
