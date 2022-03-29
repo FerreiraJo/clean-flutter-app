@@ -1,15 +1,15 @@
 steps:
 
 # Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
-- name: 'ubuntu'
+- name: 'mac'
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
   args: 
   # - 'cp -a . /persistent_volume'
-  - 'apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm'        
-  - 'kvm-ok'
-  - 'apt install android-sdk'
+  # - 'apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm'        
+  # - 'kvm-ok'
+  # - 'apt install android-sdk'
 
 
   # # using flutter builder Docker image we have built previously to compile the repo
