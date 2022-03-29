@@ -14,9 +14,9 @@
 
   # # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
-  volumes:
-  - name: 'vol1'
-    path: '/persistent_volume'
+  # volumes:
+  # - name: 'vol1'
+  #   path: '/persistent_volume'
   args: [ 'run', 
           '-e', 'ADBKEY="$(cat ~/.android/adbkey)', 
           '--device', '/dev/kvm',
