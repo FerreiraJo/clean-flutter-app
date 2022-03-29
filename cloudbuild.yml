@@ -1,7 +1,7 @@
 steps:
 
 # Set a persistent volume according to https://cloud.google.com/cloud-build/docs/build-config (search for volumes)
-- name: 'mac'
+- name: 'ubuntu'
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
