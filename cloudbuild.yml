@@ -12,7 +12,7 @@
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['run', '-e', 'ADBKEY="$(cat ~/.android/adbkey)', '--device', '/dev/kvm', '--publish', '8554:8554/tcp', --publish, '5555:5555/tcp'  'gcr.io/$PROJECT_ID/android-emulator']
+  args: ['run', '-e', 'ADBKEY="$(cat ~/.android/adbkey)', '--device', '/dev/kvm', '--publish', '8554:8554/tcp', --publish, '5555:5555/tcp',  'gcr.io/$PROJECT_ID/android-emulator']
 
 # # using flutter builder Docker image we have built previously to compile the repo
 # - name: 'gcr.io/cloud-builders/docker'
