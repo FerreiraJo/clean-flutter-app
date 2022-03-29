@@ -5,7 +5,6 @@
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  entrypoint: bash
   args: ['apt', '-y', 'install', 'bridge-utils', 'cpu-checker', 'libvirt-clients', 'libvirt-daemon', 'qemu', 'qemu-kvm']
   # - 'cp -a  ../ /persistent_volume'
   # - 'apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm'        
