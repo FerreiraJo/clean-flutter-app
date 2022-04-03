@@ -1,0 +1,159 @@
+FROM ubuntu:18.04
+
+
+#====================================
+# Install AndroidSDK and Emulator
+#====================================
+
+ENV ANDROID_SDK_HOME /opt/android-sdk-linux
+ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
+ENV ANDROID_HOME /opt/android-sdk-linux
+ENV ANDROID_SDK /opt/android-sdk-linux
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install required tools
+# Dependencies to execute Android builds
+
+RUN dpkg --add-architecture i386 && apt-get update -yqq && apt-get install -y \
+  curl \
+  expect \
+  git \
+  make \
+  libc6:i386 \
+  libgcc1:i386 \
+  libncurses5:i386 \
+  libstdc++6:i386 \
+  zlib1g:i386 \
+  openjdk-8-jdk \
+  wget \
+  unzip \
+  vim \
+  openssh-client \
+  locales \
+  bsdtar \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+ENV LANG en_US.UTF-8
+
+RUN groupadd android && useradd -d /opt/android-sdk-linux -g android -u 1000 android
+
+# gradle caching
+ENV GRADLE_USER_HOME=/cache
+VOLUME $GRADLE_USER_HOME
+
+# android pre-installed sdk tools/libs
+ARG ANDROID_VERSION="android-30"
+ARG ANDROID_EMULATOR_PACKAGE_x86="system-images;${ANDROID_VERSION};google_apis;x86"
+ARG ANDROID_PLATFORM_VERSION="platforms;${ANDROID_VERSION}"
+ARG ANDROID_SDK_VERSION="sdk-tools-linux-4333796.zip"
+ARG ANDROID_SDK_PACKAGES_EXTRA=""
+ARG ANDROID_SDK_PACKAGES="${ANDROID_EMULATOR_PACKAGE_x86} ${ANDROID_PLATFORM_VERSION} platform-tools emulator ${ANDROID_SDK_PACKAGES_EXTRA}"
+
+RUN wget https://dl.google.com/android/repository/${ANDROID_SDK_VERSION} -P /tmp && \
+    unzip -d /opt/android /tmp/${ANDROID_SDK_VERSION}
+ENV ANDROID_HOME=/opt/android
+ENV PATH "$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools:$ANDROID_HOME/build-tools/30.0.3"
+
+# sdkmanager
+RUN mkdir /root/.android/
+RUN touch /root/.android/repositories.cfg
+RUN yes Y | sdkmanager --licenses 
+RUN yes Y | sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES} 
+RUN yes Y | sdkmanager --verbose --no_https "build-tools;30.0.3"
+
+# avdmanager
+ENV EMULATOR_NAME_x86="android_x86"
+RUN echo "no" | avdmanager --verbose create avd --force --name "${EMULATOR_NAME_x86}" --device "pixel" --package "${ANDROID_EMULATOR_PACKAGE_x86}"
+ENV LD_LIBRARY_PATH "$ANDROID_HOME/emulator/lib64:$ANDROID_HOME/emulator/lib64/qt/lib"
+
+#==============
+# Install ruby
+#==============
+ENV TZ="US/Pacific"
+RUN echo "${TZ}" > /etc/timezone
+
+RUN apt-get -qqy update && \
+    apt-get -qqy --no-install-recommends install build-essential git bzip2  libssl-dev libreadline-dev zlib1g-dev&& \
+    apt-get clean
+
+RUN git clone https://github.com/rbenv/rbenv.git /usr/local/rbenv \
+&&  git clone https://github.com/rbenv/ruby-build.git /usr/local/rbenv/plugins/ruby-build \
+&&  git clone https://github.com/jf/rbenv-gemset.git /usr/local/rbenv/plugins/rbenv-gemset \
+&&  /usr/local/rbenv/plugins/ruby-build/install.sh
+ENV PATH /usr/local/rbenv/bin:$PATH
+ENV RBENV_ROOT /usr/local/rbenv
+
+RUN echo 'export RBENV_ROOT=/usr/local/rbenv' >> /etc/profile.d/rbenv.sh \
+&&  echo 'export PATH=/usr/local/rbenv/bin:$PATH' >> /etc/profile.d/rbenv.sh \
+&&  echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh
+
+RUN echo 'export RBENV_ROOT=/usr/local/rbenv' >> /root/.bashrc \
+&&  echo 'export PATH=/usr/local/rbenv/bin:$PATH' >> /root/.bashrc \
+&&  echo 'eval "$(rbenv init -)"' >> /root/.bashrc
+
+ENV CONFIGURE_OPTS --disable-install-doc
+ENV PATH /usr/local/rbenv/bin:/usr/local/rbenv/shims:$PATH
+
+ENV RBENV_VERSION 2.7.3
+
+RUN eval "$(rbenv init -)"; rbenv install $RBENV_VERSION \
+&&  eval "$(rbenv init -)"; rbenv global $RBENV_VERSION \
+&&  eval "$(rbenv init -)"; gem update --system \
+&&  eval "$(rbenv init -)"; gem install bundler -f \
+&&  rm -rf /tmp/*
+
+#====================================
+# Install latest nodejs, npm, appium
+#====================================
+ARG NODE_VERSION=v12.0.0
+ENV NODE_VERSION=$NODE_VERSION
+ARG APPIUM_VERSION=1.22.1
+ENV APPIUM_VERSION=$APPIUM_VERSION
+
+RUN wget -q https://nodejs.org/dist/${NODE_VERSION}/node-${NODE_VERSION}-linux-x64.tar.xz \
+    && tar -xJf node-${NODE_VERSION}-linux-x64.tar.xz -C /opt/ \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/npm /usr/bin/ \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/node /usr/bin/ \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/npx /usr/bin/ \
+    && npm install -g appium@${APPIUM_VERSION} --allow-root --unsafe-perm=true \
+    && ln -s /opt/node-${NODE_VERSION}-linux-x64/bin/appium /usr/bin/
+
+#====================================
+# Install appium-flutter-driver
+#====================================
+RUN npm install -g appium-flutter-driver --allow-root --unsafe-perm=true
+
+# Add Tini as init process via ENTRYPOINT - https://github.com/krallin/tini
+ARG TINI_VERSION=v0.18.0
+RUN curl --silent --fail --show-error --location --remote-name \
+        https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini-static \
+    && mv tini-static /bin/tini \
+    && chmod +x /bin/tini
+ENTRYPOINT ["tini", "--"]
+
+WORKDIR /app
+# Add Gemfile and bundle cache from previous build, if it exists
+COPY ./integration_test/appium-flutter-driver-example/Gemfile* ./integration_test/appium-flutter-driver-example/bundle.* /app/
+RUN if [ -f bundle.tar ]; then \
+      mkdir -p vendor/bundle \
+      && tar xf bundle.tar -C vendor/bundle 2> /dev/null; \
+    fi
+
+# RUN gem install bundler -v 2.1.4
+# Install gems before adding the whole app in order to get optimal caching
+RUN bundle config set deployment "true" \
+    && bundle config set --local without "development" \
+    && bundle install --jobs "$(nproc)" --retry 20 \
+    && bundle clean
+
+# Finally it is time to copy all the app files
+COPY ./integration_test/appium-flutter-driver-example /app/
+RUN rm -f bundle.tar
+
+COPY ./docker/start.sh /usr/local/bin
+RUN chmod +x /usr/local/bin/start.sh
+
+CMD ["start.sh"]

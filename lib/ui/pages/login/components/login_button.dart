@@ -12,6 +12,7 @@ class LoginButton extends StatelessWidget {
       stream: presenter.isFormValidStream,
       builder: (context, snapshot) {
         return ElevatedButton(
+          key: ValueKey('LoginButton'),
           onPressed: snapshot.data == true ? presenter.auth : null,
           child: Text(R.string.enter.toUpperCase()),
         );

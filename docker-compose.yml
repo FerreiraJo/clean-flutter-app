@@ -1,0 +1,12 @@
+version: '3.1'
+
+services:
+  emulator_android:
+    image:  ubuntu:latest
+    devices:
+      - "/dev/kvm:/dev/kvm"
+    privileged: true
+    # network_mode: host
+    # logging:
+    #   driver: none
+
