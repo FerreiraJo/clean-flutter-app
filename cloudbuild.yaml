@@ -5,7 +5,7 @@ steps:
   volumes:
   - name: 'vol1'
     path: '/persistent_volume'
-  args: ['cp', '-a', '. /persistent_volume']
+  args: ['cp', '-a', '.', '/persistent_volume']
 
 # using flutter builder Docker image we have built previously to compile the repo
 - name: 'gcr.io/cloud-builders/docker'
